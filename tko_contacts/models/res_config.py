@@ -21,7 +21,6 @@ class CRMSettings(models.TransientModel):
     module_tko_partner_multiple_assets = fields.Boolean("Manage Multiple Assets ?",
                                                           help="Manage multiple partner Addresses")
     #
-    # @api.multi
     # def execute(self):
     #     to_install = list(self.modules_to_install())
     #     _logger.info('Selecting addons %s to install', to_install)

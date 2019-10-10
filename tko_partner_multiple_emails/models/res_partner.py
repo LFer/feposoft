@@ -52,7 +52,6 @@ class ResPartnerEmail(models.Model):
         if self.email:
             if "@" not in self.email:
                 raise Warning('Formato inválido - no se encontró @')
-    @api.multi
     def set_main_email(self):
         for record in self:
             email_ids = self.search([('partner_id', '=', record.partner_id.id)])
