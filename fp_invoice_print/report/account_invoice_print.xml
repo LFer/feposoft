@@ -3,21 +3,7 @@
     <data>
 
 
-        <record model="report.paperformat" id="preprint_paperformat_a4">
-            <field name="name">A4-Preimpreso</field>
-            <field name="margin_left">3</field>
-            <field name="page_height">0</field>
-            <field name="page_width">0</field>
-            <field name="format">A4</field>
-            <field name="margin_top">5</field>
-            <field name="margin_right">3</field>
-            <field name="margin_bottom">3</field>
-            <field name="header_line">False</field>
-            <field name="header_spacing">35</field>
-            <field name="dpi">90</field>
-            <field name="orientation">Portrait</field>
-            <field name="report_ids" eval="[(6, 0, [ref('report_preprint_invoice_document')])]"/>
-        </record>
+
 
         <template id="report_preprint_invoice_document">
             <t t-name="fp_invoice_print.report_preprint_invoice_document">
@@ -134,7 +120,6 @@
         </template>
 
 
-
         <report
             id="account_invoice_feposoft_template"
             model="account.move"
@@ -142,8 +127,24 @@
             report_type="qweb-pdf"
             name="fp_invoice_print.report_invoice"
             file="fp_invoice_print.preprint_invoice"
-
         />
+
+        <record model="report.paperformat" id="preprint_paperformat_a4">
+            <field name="name">A4-Preimpreso</field>
+            <field name="margin_left">3</field>
+            <field name="page_height">0</field>
+            <field name="page_width">0</field>
+            <field name="format">A4</field>
+            <field name="margin_top">5</field>
+            <field name="margin_right">3</field>
+            <field name="margin_bottom">3</field>
+            <field name="header_line">False</field>
+            <field name="header_spacing">35</field>
+            <field name="dpi">90</field>
+            <field name="orientation">Portrait</field>
+            <field name="report_ids" eval="[(6, 0, [ref('report_preprint_invoice_document')])]"/>
+        </record>
+
 
     </data>
 </openerp>
