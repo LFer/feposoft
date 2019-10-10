@@ -1,0 +1,5 @@
+openpyxl
+ipdb
+qrcode
+ssl
+suds
