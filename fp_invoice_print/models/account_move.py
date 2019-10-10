@@ -11,7 +11,6 @@ class AccountMove(models.Model):
         res.setdefault(self.env['account.tax'].search([('name', 'ilike', '%Ventas (10%')]), [0.0, 0.0])
         res.setdefault(self.env['account.tax'].search([('name', 'ilike', '%Ventas (22%')]), [0.0, 0.0])
         res.setdefault(self.env['account.tax'].search([('name', 'ilike', '%Ventas Exentos%')]), [0.0, 0.0])
-        # import ipdb;ipdb.set_trace()
         for line in self.tax_line:
             res.setdefault(line.tax_code_id, [0.0, 0.0])
             res[line.tax_code_id][0] += line.base

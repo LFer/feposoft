@@ -10,7 +10,7 @@ from dateutil.relativedelta import relativedelta
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 from odoo.tools import float_compare
-
+import ipdb
 
 from ..services.currency_getter_interface import CurrencyGetterType
 
@@ -32,7 +32,7 @@ class CurrencyRateUpdateService(models.Model):
     _description = "Currency Rate Update"
     _rec_name = "service"
 
-    @api.multi
+
     @api.constrains('max_delta_days')
     def _check_max_delta_days(self):
         for srv in self:
@@ -40,14 +40,14 @@ class CurrencyRateUpdateService(models.Model):
                 raise ValidationError(_(
                     'Max delta days must be >= 0'))
 
-    @api.multi
+
     @api.constrains('interval_number')
     def _check_interval_number(self):
         for srv in self:
             if srv.interval_number < 0:
                 raise ValidationError(_('Interval number must be >= 0'))
 
-    @api.multi
+
     def write(self, vals):
         if 'interval_number' in vals and vals['interval_number'] == 0:
             for service in self:
@@ -60,18 +60,16 @@ class CurrencyRateUpdateService(models.Model):
 
     @api.onchange('service')
     def _onchange_service(self):
-        currency_list = ''
+        currency_list = False
         res = {'domain': {
             'currency_to_update': "[('id', '=', False)]",
         }}
         if self.service:
             getter = CurrencyGetterType.get(self.service)
             currency_list = getter.supported_currency_array
-            currencies = self.env['res.currency'].search(
-                [('name', 'in', currency_list)])
+            currencies = self.env['res.currency'].search([('name', 'in', currency_list)])
             currency_list = [(6, 0, currencies.ids)]
-            res['domain']['currency_to_update'] = \
-                "[('id', 'in', %s)]" % currencies.ids
+            res['domain']['currency_to_update'] = "[('id', 'in', %s)]" % currencies.ids
         self.currency_list = currency_list
         return res
 
@@ -125,7 +123,7 @@ class CurrencyRateUpdateService(models.Model):
                          _('You can use a service only one time per '
                            'company !'))]
 
-    @api.multi
+
     def refresh_currency(self):
         """Refresh the currencies rates !!for all companies now"""
         rate_obj = self.env['res.currency.rate']
@@ -212,7 +210,7 @@ class CurrencyRateUpdateService(models.Model):
                     srv.next_run = next_run
         return True
 
-    @api.multi
+
     def run_currency_update(self):
         # Update currency at the given frequence
         services = self.search([('next_run', '=', fields.Date.today())])
