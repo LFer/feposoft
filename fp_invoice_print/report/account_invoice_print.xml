@@ -16,19 +16,20 @@
             <field name="header_spacing">35</field>
             <field name="dpi">90</field>
             <field name="orientation">Portrait</field>
+            <field name="report_ids" eval="[(6, 0, [ref('report_preprint_invoice_document')])]"/>
         </record>
 
         <template id="report_preprint_invoice_document">
-
             <t t-name="fp_invoice_print.report_preprint_invoice_document">
                 <t t-name="fp_invoice_print.report_preprint_invoice_document">
                     <t t-set="o" t-value="o.with_context({'lang':o.partner_id.lang})"/>
                     <div class="page">
-
                         <div class="mitad-preimpreso" t-foreach="['via cliente','copia archivo']" t-as="nada">
                             <div style="position:absolute;top"/>
                             <div style="text-align:center;padding-top:130px;font-size:1.3em">
-                                <span t-raw="o.partner_id.vat[2:]"/>
+                                <t t-if="o.partner_id.vat">
+                                    <span t-raw="o.partner_id.vat[2:]"/>
+                                </t>
                             </div>
                             <div>
                                 <div style="display:inline-block;align;left;padding-top:49px">
@@ -40,18 +41,20 @@
                                         </tr>
                                         <tr style="height:20px">
                                             <td style="padding-left:100px; white-space:nowrap">
-                                                <span t-raw="o.partner_id.street + (' ' + o.partner_id.street2 if o.partner_id.street2 else '')"/>
+                                                <t t-if="o.partner_id.street">
+                                                    <span t-raw="o.partner_id.street + (' ' + o.partner_id.street2 if o.partner_id.street2 else '')"/>
+                                                </t>
                                             </td>
                                         </tr>
                                     </table>
                                 </div>
                                 <div style="margin-right:55px;display:inline-block;padding-top:72px;" class="pull-right">
-                                    <span style="text-align:center;width:150px;font-size:1.3em;word-spacing:33px;" t-field="o.date_invoice" t-field-options="{&quot;format&quot;:&quot;d MM yy&quot;}"/>
+                                    <span style="text-align:center;width:150px;font-size:1.3em;word-spacing:33px;" t-field="o.invoice_date" t-field-options="{&quot;format&quot;:&quot;d MM yy&quot;}"/>
                                 </div>
                             </div>
                             <div style="height:240px;margin-top:50px">
                                 <table style="margin-left:55px">
-                                    <tr t-foreach="o.invoice_line" t-as="l">
+                                    <tr t-foreach="o.invoice_line_ids" t-as="l">
                                         <td style="width: 750px">
                                             <span t-field="l.name"/>
                                         </td>
@@ -110,9 +113,6 @@
     }
 </style>
 
-                            <!--<div class="rectangle_subtotal_usd"/>-->
-                            <!--<div class="rectangle_iva_usd"/>-->
-                            <!--<div class="rectangle_total_usd"/>-->
 
                             <t t-if="nada == 'via cliente'">
                                 <div style="height:45px">.</div>
@@ -123,27 +123,27 @@
             </t>
         </template>
 
-        <template id="report_invoices">
-            <t t-call="report.html_container">
+
+        <template id="report_invoice">
+            <t t-call="web.html_container">
                 <t t-foreach="docs" t-as="o">
-                    <t t-call="fp_invoice_print.report_preprint_invoice_document" t-lang="o.partner_id.lang"/>
+                    <t t-set="lang" t-value="o.invoice_user_id.lang if o.type in ('in_invoice', 'in_refund') else o.partner_id.lang"/>
+                    <t t-call="fp_invoice_print.report_preprint_invoice_document" t-lang="lang"/>
                 </t>
             </t>
         </template>
 
-        <report id="invoice_preprints"
-                model="account.invoice"
-                string="Preimpreso"
-                report_type="qweb-pdf"
-                name="fp_invoice_print.report_invoices"
-                file="fp_invoice_print.preprint_invoice"
 
+
+        <report
+            id="account_invoice_feposoft_template"
+            model="account.move"
+            string="Preimpreso"
+            report_type="qweb-pdf"
+            name="fp_invoice_print.report_invoice"
+            file="fp_invoice_print.preprint_invoice"
 
         />
-
-        <record id="invoice_preprints" model="ir.actions.report.xml">
-            <field name="paperformat_id" ref="fp_invoice_print.preprint_paperformat_a4"/> <!-- Put Your Custom PaperFormat Id -->
-        </record>
 
     </data>
 </openerp>

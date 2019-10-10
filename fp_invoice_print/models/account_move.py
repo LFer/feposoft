@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from openerp import models, api
+from odoo import models, api
 
-class AccountInvoice(models.Model):
-    _inherit = 'account.invoice'
+class AccountMove(models.Model):
+    _inherit = 'account.move'
 
-    @api.multi
     def _get_tax_amount_by_group(self):
         self.ensure_one()
         res = {}
