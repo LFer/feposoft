@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+
+        <record model="report.paperformat" id="preprint_paperformat_a4">
+            <field name="name">A4-Preimpreso</field>
+            <field name="margin_left">3</field>
+            <field name="page_height">0</field>
+            <field name="page_width">0</field>
+            <field name="format">A4</field>
+            <field name="margin_top">5</field>
+            <field name="margin_right">3</field>
+            <field name="margin_bottom">3</field>
+            <field name="header_line">False</field>
+            <field name="header_spacing">35</field>
+            <field name="dpi">90</field>
+            <field name="orientation">Portrait</field>
+        </record>
+
+        <template id="report_preprint_invoice_document">
+
+            <t t-name="fp_invoice_print.report_preprint_invoice_document">
+                <t t-name="fp_invoice_print.report_preprint_invoice_document">
+                    <t t-set="o" t-value="o.with_context({'lang':o.partner_id.lang})"/>
+                    <div class="page">
+
+                        <div class="mitad-preimpreso" t-foreach="['via cliente','copia archivo']" t-as="nada">
+                            <div style="position:absolute;top"/>
+                            <div style="text-align:center;padding-top:130px;font-size:1.3em">
+                                <span t-raw="o.partner_id.vat[2:]"/>
+                            </div>
+                            <div>
+                                <div style="display:inline-block;align;left;padding-top:49px">
+                                    <table>
+                                        <tr style="height:35px">
+                                            <td style="padding-left:90px">
+                                                <span t-field="o.partner_id.name"/>
+                                            </td>
+                                        </tr>
+                                        <tr style="height:20px">
+                                            <td style="padding-left:100px; white-space:nowrap">
+                                                <span t-raw="o.partner_id.street + (' ' + o.partner_id.street2 if o.partner_id.street2 else '')"/>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div style="margin-right:55px;display:inline-block;padding-top:72px;" class="pull-right">
+                                    <span style="text-align:center;width:150px;font-size:1.3em;word-spacing:33px;" t-field="o.date_invoice" t-field-options="{&quot;format&quot;:&quot;d MM yy&quot;}"/>
+                                </div>
+                            </div>
+                            <div style="height:240px;margin-top:50px">
+                                <table style="margin-left:55px">
+                                    <tr t-foreach="o.invoice_line" t-as="l">
+                                        <td style="width: 750px">
+                                            <span t-field="l.name"/>
+                                        </td>
+                                        <td class="text-right" style="width: 70px">
+                                            <span t-field="l.price_subtotal" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="row">
+                                <div class="pull-right">
+                                    <table style="margin-right:80px;margin-top:-30px">
+                                        <tr style="height:45px">
+                                            <td class="text-right" style="width:100px">
+                                                <span t-field="o.amount_untaxed" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}"/>
+                                            </td>
+                                        </tr>
+                                        <tr style="height:45px">
+                                            <td class="text-right" style="width:100px">
+                                                <span t-field="o.amount_tax" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}"/>
+                                            </td>
+                                        </tr>
+                                        <tr style="height:45px">
+                                            <td class="text-right" style="width:100px">
+                                                <span t-field="o.amount_total" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}"/>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+<style>
+
+    .rectangle_subtotal_usd{
+        position:absolute;
+        top:560px;
+        right:550px;
+        width:20px;
+        height:30px;
+        background-color:black;
+    }
+    .rectangle_iva_usd{
+        position:absolute;
+        top:603px;
+        right:550px;
+        width:20px;
+        height:30px;
+        background-color:black;
+    }
+    .rectangle_total_usd{
+        position:absolute;
+        top:647px;
+        right:550px;
+        width:20px;
+        height:30px;
+        background-color:black;
+    }
+</style>
+
+                            <!--<div class="rectangle_subtotal_usd"/>-->
+                            <!--<div class="rectangle_iva_usd"/>-->
+                            <!--<div class="rectangle_total_usd"/>-->
+
+                            <t t-if="nada == 'via cliente'">
+                                <div style="height:45px">.</div>
+                            </t>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </template>
+
+        <template id="report_invoices">
+            <t t-call="report.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="fp_invoice_print.report_preprint_invoice_document" t-lang="o.partner_id.lang"/>
+                </t>
+            </t>
+        </template>
+
+        <report id="invoice_preprints"
+                model="account.invoice"
+                string="Preimpreso"
+                report_type="qweb-pdf"
+                name="fp_invoice_print.report_invoices"
+                file="fp_invoice_print.preprint_invoice"
+
+
+        />
+
+        <record id="invoice_preprints" model="ir.actions.report.xml">
+            <field name="paperformat_id" ref="fp_invoice_print.preprint_paperformat_a4"/> <!-- Put Your Custom PaperFormat Id -->
+        </record>
+
+    </data>
+</openerp>
