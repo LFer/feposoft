@@ -27,7 +27,7 @@
     'version': '1.0.0',
     'author': 'Feposoft',
     'website': 'feposft.com',
-    'depends': ['account', 'report'],
+    'depends': ['account'],
     'category': 'Reporting',
     'description': '''
     ''',
