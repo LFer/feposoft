@@ -23,20 +23,20 @@
 ##############################################################################
 
 {
-    "name": "Preimpreso de Factura",
-    "version": "1.0.0",
-    "author": "Feposoft",
-    "website": "feposft.com",
-    "depends": ["account"],
-    "category": "Reporting",
-    "description": """
-    """,
-    "data" : [
+    'name': 'Preimpreso de Factura',
+    'version': '1.0.0',
+    'author': 'Feposoft',
+    'website': 'feposft.com',
+    'depends': ['account', 'report'],
+    'category': 'Reporting',
+    'description': '''
+    ''',
+    'data' : [
         'report/account_invoice_print.xml',
 
       
     ],  
-    "active": False,
-    "installable": True
+    'active': False,
+    'installable': True
 }
 
